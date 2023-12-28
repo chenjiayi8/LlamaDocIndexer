@@ -1,7 +1,4 @@
 .ipynb_checkpoints/
 __pycache__/
 # keep empty folders for indices and documents
-indices/*
-documents/*
-!indices/.gitkeep
-!documents/.gitkeep
+*.egg-info/
