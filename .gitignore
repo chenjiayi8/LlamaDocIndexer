@@ -2,3 +2,5 @@
 __pycache__/
 # keep empty folders for indices and documents
 *.egg-info/
+build/
+dist/
