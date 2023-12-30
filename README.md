@@ -5,19 +5,32 @@ LlamaDocIndexer is a dynamic and efficient repository designed to seamlessly int
 
 
 # Usage
-```
+```python
+import os
+from pathlib import Path
+from dotenv import dotenv_values
+from LlamaDocIndexer import Indexer
+
+# load environment variable from .env file
+BASE_DIR = Path(os.getcwd()).resolve()
+dotenv_path = os.path.join(BASE_DIR, ".env")
+config = dotenv_values(dotenv_path)
+os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
+
+# initialize LlamaDocIndexer
 documents_folder = "./documents/tutorials/"
 indices_folder = "./indices/tutorials/"
-file_types = [".txt", ".tex"]
-ignored_files = ["temp", "template]
+file_types = [".txt", ".pdf"]
+ignored_files = ["temp", "template"]
 recursive_depth = 3
-indexer = LlamaDocIndexer(
+indexer = Indexer(
     documents_folder,
     indices_folder,
     types=file_types,
     ignored_files=ignored_files,
     depth=recursive_depth,
 )
-
-indexer.query("What is the best way to cook a steak?")
+# query LlamaDocIndexer
+response = indexer.query("What is the best way to cook a steak?")
+print(response)
 ```
