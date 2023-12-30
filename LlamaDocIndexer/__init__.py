@@ -1,1 +1,1 @@
-from .indexer import LlamaDocIndexer
+from .indexer import Indexer

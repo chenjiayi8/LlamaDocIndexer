@@ -5,7 +5,7 @@ import time
 
 from llama_index import ComposableGraph, ListIndex, StorageContext
 
-from LlamaDocIndexer.LlamaDocIndexer.io.documents import (
+from LlamaDocIndexer.io.documents import (
     load_index,
     make_dirs,
     read_pdf,
@@ -16,7 +16,7 @@ from LlamaDocIndexer.LlamaDocIndexer.io.documents import (
 )
 
 
-class LlamaDocIndexer:
+class Indexer:
     """Indexes a folder of documents and saves the index to a folder."""
 
     def __init__(
@@ -195,8 +195,5 @@ class LlamaDocIndexer:
     def query(self, query):
         if self.build() or self.query_engine is None:
             self.create_query_engine()
-        start_time = time.time()
         response = self.query_engine.query(query)
-        time_used = time.time() - start_time
-        print(f"Query time: {time_used:.2f}")
         return response
