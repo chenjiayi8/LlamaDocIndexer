@@ -146,7 +146,7 @@ class Indexer:
                 # read text
                 text = self.read_text(root, file)
                 if text is None:
-                    continue
+                    raise ValueError("Cannot read text from " + file)
                 summary["text"] = text
 
                 # create index folder
