@@ -120,23 +120,24 @@ class Indexer:
                     relative_path.encode("utf-8")
                 ).hexdigest()
 
-                # create summary object
-                summary = {
+                # create summary data object
+                data = {
                     "name": file,
                     "path": relative_path,
                     "text": None,
+                    "summary": ""
                 }
                 modified = os.path.getmtime(file_path)
 
                 # check if file is already indexed
                 if path_hash not in self.indices:
                     self.indices["menu"][path_hash] = {
-                        "name": summary["name"],
-                        "path": summary["path"],
+                        "name": data["name"],
+                        "path": data["path"],
                         "modified": -1,
                     }
                     self.indices[path_hash] = {
-                        "summary": summary["path"],
+                        "summary": data["summary"],
                         "index": None,
                     }
                 # check if file has been modified
