@@ -40,6 +40,8 @@ class Indexer:
                 ".xlsx",
                 ".tex",
             ]
+        if self.ignored_files is None:
+            self.ignored_files = []
         make_dirs(self.index_path)
         # load menu
         menu_path = os.path.join(self.index_path, "menu.json")
