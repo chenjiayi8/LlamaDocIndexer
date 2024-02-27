@@ -108,14 +108,13 @@ class Indexer:
                 # check if file is supported
                 if not self.is_supported_file(file):
                     continue
-                # get file path
                 file_path = os.path.join(root, file)
-                # get relative path
-                relative_path = os.path.relpath(file_path, self.folder_path)
-                depth = root.replace(relative_path, "").count(os.sep)
+                depth = file_path.replace(self.folder_path, "").count(os.sep)
                 # check depth
                 if depth > self.depth:
                     continue
+                # get relative path
+                relative_path = os.path.relpath(file_path, self.folder_path)
                 # get path hash
                 path_hash = hashlib.md5(
                     relative_path.encode("utf-8")
