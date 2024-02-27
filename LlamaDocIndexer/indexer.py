@@ -95,6 +95,8 @@ class Indexer:
             text = read_pdf(file_path)
         elif file_extension.lower() == ".xlsx":
             text = read_xlsx(file_path)
+        else:
+            raise ValueError("Unsupported file type: " + file_extension)
         return text
 
     def build(self):
