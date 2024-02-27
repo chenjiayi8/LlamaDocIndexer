@@ -5,15 +5,9 @@ import time
 
 from llama_index import ComposableGraph, ListIndex, StorageContext
 
-from LlamaDocIndexer.io.documents import (
-    load_index,
-    make_dirs,
-    read_pdf,
-    read_plain_text,
-    read_xlsx,
-    save_index,
-    text_to_index,
-)
+from LlamaDocIndexer.io.documents import (load_index, make_dirs, read_pdf,
+                                          read_plain_text, read_xlsx,
+                                          save_index, text_to_index)
 
 
 class Indexer:
