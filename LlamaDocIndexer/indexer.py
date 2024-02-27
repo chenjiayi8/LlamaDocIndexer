@@ -67,7 +67,7 @@ class Indexer:
                 data = json.load(f)
                 index_path = os.path.join(self.index_path, path_hash, "index")
                 self.indices[path_hash] = {
-                    "summary": data["path"],
+                    "summary": data["summary"],
                     "index": load_index(index_path),
                 }
 
