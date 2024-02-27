@@ -89,7 +89,7 @@ class Indexer:
         text = None
         if file_extension not in self.types:
             return text
-        if file_extension.lower() in [".txt", ".tex"]:
+        if file_extension.lower() in [".txt", ".tex", ".json"]:
             text = read_plain_text(file_path)
         elif file_extension.lower() == ".pdf":
             text = read_pdf(file_path)
