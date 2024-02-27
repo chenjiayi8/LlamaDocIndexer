@@ -49,6 +49,12 @@ class Indexer:
 
         self.load_indices()
 
+    def generate_summary(self, index):
+        """Generates a summary from an index."""
+        engine = index.as_query_engine()
+        summary = engine.query("Please summarise this document.")
+        return str(summary)
+
     def load_indices(self):
         """Loads the indices from the index folder."""
         for path_hash in self.indices["menu"]:
