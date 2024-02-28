@@ -209,3 +209,14 @@ class Indexer:
         """ Returns a list of indexed files."""
         files = [v["path"] for k, v in self.indices["menu"].items()]
         return files
+
+    def get_file_engine(self, file_path):
+        """ Returns a query engine for a file."""
+        path_hash = hashlib.md5(file_path.encode("utf-8")).hexdigest()
+        if path_hash not in self.indices["menu"]:
+            raise ValueError("File not indexed: " + file_path)
+        index_path = os.path.join(self.index_path, path_hash, "index")
+        storage_context = StorageContext.from_defaults(persist_dir=index_path)
+        index = load_index_from_storage(storage_context)
+        file_engine = index.as_query_engine()
+        return file_engine
