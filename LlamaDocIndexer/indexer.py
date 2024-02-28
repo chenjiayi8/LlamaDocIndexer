@@ -3,7 +3,7 @@ import json
 import os
 import time
 
-from llama_index import ComposableGraph, ListIndex, StorageContext
+from llama_index import ComposableGraph, ListIndex, StorageContext, load_index_from_storage, Document, VectorStoreIndex
 
 from LlamaDocIndexer.io.documents import (load_index, make_dirs, read_pdf,
                                           read_plain_text, read_xlsx,
@@ -48,6 +48,12 @@ class Indexer:
                 json.dump(self.indices["menu"], f, indent=4)
 
         self.load_indices()
+
+    def generate_index(self, text):
+        """Generates an index from text."""
+        document = Document(text=text)
+        index = VectorStoreIndex.from_documents([document])
+        return index
 
     def generate_summary(self, index):
         """Generates a summary from an index."""
