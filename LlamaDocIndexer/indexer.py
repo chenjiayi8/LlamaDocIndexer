@@ -150,27 +150,37 @@ class Indexer:
                 if modified == self.indices["menu"][path_hash]["modified"]:
                     continue
                 self.indices["menu"][path_hash]["modified"] = modified
+
+                # announce indexing
+                print("Indexing " + relative_path)
+
                 # read text
                 text = self.read_text(root, file)
                 if text is None:
                     raise ValueError("Cannot read text from " + file)
-                summary["text"] = text
+                data["text"] = text
 
                 # create index folder
                 index_folder = os.path.join(self.index_path, path_hash)
                 make_dirs(index_folder)
 
-                # save summary
-                summary_path = os.path.join(index_folder, "data.json")
+                # create index
                 index_path = os.path.join(index_folder, "index")
-                with open(summary_path, "w", encoding="utf-8") as f:
-                    json.dump(summary, f, indent=4)
+                index = self.generate_index(data["text"])
+
+
+                # generate summary
+                data["summary"] = self.generate_summary(index)
+
+                # save summary data
+                data_path = os.path.join(index_folder, "data.json")
+                with open(data_path, "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=4)
 
                 # add to index
-                print("Indexing " + relative_path)
                 self.indices[path_hash] = {
-                    "summary": summary["path"],
-                    "index": text_to_index(summary_path),
+                    "summary": data["summary"],
+                    "index": index,
                 }
 
                 # save index
