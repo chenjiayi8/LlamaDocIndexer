@@ -204,3 +204,8 @@ class Indexer:
             self.create_query_engine()
         response = self.query_engine.query(query)
         return response
+
+    def get_file_list(self):
+        """ Returns a list of indexed files."""
+        files = [v["path"] for k, v in self.indices["menu"].items()]
+        return files
