@@ -3,11 +3,25 @@ import json
 import os
 import time
 
-from llama_index import ComposableGraph, ListIndex, StorageContext, load_index_from_storage, Document, VectorStoreIndex
+from llama_index import (
+    ComposableGraph,
+    Document,
+    ListIndex,
+    StorageContext,
+    VectorStoreIndex,
+    load_index_from_storage,
+)
 
-from LlamaDocIndexer.io.documents import (load_index, make_dirs, read_pdf,
-                                          read_plain_text, read_xlsx,
-                                          save_index, text_to_index)
+from LlamaDocIndexer.io.documents import (
+    is_plain_text,
+    load_index,
+    make_dirs,
+    read_pdf,
+    read_plain_text,
+    read_xlsx,
+    save_index,
+    text_to_index,
+)
 
 
 class Indexer:
@@ -95,7 +109,7 @@ class Indexer:
         text = None
         if file_extension not in self.types:
             return text
-        if file_extension.lower() in [".txt", ".tex", ".json"]:
+        if is_plain_text(file_path):
             text = read_plain_text(file_path)
         elif file_extension.lower() == ".pdf":
             text = read_pdf(file_path)
@@ -131,7 +145,7 @@ class Indexer:
                     "name": file,
                     "path": relative_path,
                     "text": None,
-                    "summary": ""
+                    "summary": "",
                 }
                 modified = os.path.getmtime(file_path)
 
@@ -167,7 +181,6 @@ class Indexer:
                 # create index
                 index_path = os.path.join(index_folder, "index")
                 index = self.generate_index(data["text"])
-
 
                 # generate summary
                 data["summary"] = self.generate_summary(index)
@@ -222,12 +235,12 @@ class Indexer:
         return response
 
     def get_file_list(self):
-        """ Returns a list of indexed files."""
+        """Returns a list of indexed files."""
         files = [v["path"] for k, v in self.indices["menu"].items()]
         return files
 
     def get_file_engine(self, file_path):
-        """ Returns a query engine for a file."""
+        """Returns a query engine for a file."""
         path_hash = hashlib.md5(file_path.encode("utf-8")).hexdigest()
         if path_hash not in self.indices["menu"]:
             raise ValueError("File not indexed: " + file_path)
