@@ -18,6 +18,25 @@ def make_dirs(folder):
         os.makedirs(folder)
 
 
+def is_plain_text(path, encoding="utf-8"):
+    """Check if a file is likely a plain text file, considering UTF-8 encoding."""
+    try:
+        with open(path, "rb") as f:
+            # Try reading the file and decoding it as UTF-8 (or specified encoding)
+            # This will raise a UnicodeDecodeError if the file contains characters
+            # that can't be decoded with the specified encoding.
+            content = f.read()
+            content.decode(encoding)
+    except UnicodeDecodeError:
+        # If a UnicodeDecodeError is encountered, it's likely not a text file
+        return False
+    except Exception as e:
+        # Handle other potential errors (like file not found)
+        print(f"Error reading file: {e}")
+        return False
+    return True
+
+
 def read_plain_text(path):
     """Reads a plain text file and returns the text as a string."""
     with open(path, "r", encoding="utf-8", errors="ignore") as f:
