@@ -95,14 +95,15 @@ class Indexer:
                     "index": load_index(index_path),
                 }
 
-    def is_supported_file(self, file):
+    def is_supported_file(self, file_path):
         """Checks if a file is supported."""
-        file_basename = os.path.splitext(file)[0]
-        if file_basename.lower() in self.ignored_files:
-            return False
-        file_extension = os.path.splitext(file)[1]
-        if file_extension.lower() in self.types:
+        file_name = os.path.basename(file_path)
+        for pattern in self.ignored_patterns:
+            if pattern.match(file_name) is not None:
+                return False
+        if is_plain_text(file_path):
             return True
+
         return False
 
     def read_text(self, root, file):
