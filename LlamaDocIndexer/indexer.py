@@ -122,6 +122,15 @@ class Indexer:
             raise ValueError("Unsupported file type: " + file_extension)
         return text
 
+    def has_ignore_folder(self, path):
+        """Checks if a path contains an ignored folder."""
+        if self.folder_path in path:
+            path = path.replace(self.folder_path, "")
+        folders = path.split(os.sep)
+        if any(folder in self.ignored_folders for folder in folders):
+            return True
+        return False
+
     def build(self):
         """Builds the index."""
         update = False
