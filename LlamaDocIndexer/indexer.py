@@ -140,9 +140,10 @@ class Indexer:
                 continue
             for file in files:
                 # check if file is supported
-                if not self.is_supported_file(file):
-                    continue
                 file_path = os.path.join(root, file)
+                if not self.is_supported_file(file_path):
+                    continue
+
                 depth = file_path.replace(self.folder_path, "").count(os.sep)
                 # check depth
                 if depth > self.depth:
