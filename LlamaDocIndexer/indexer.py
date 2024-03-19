@@ -172,6 +172,7 @@ class Indexer:
                 text = self.read_text(root, file)
                 if text is None or len(text) == 0:
                     del self.indices["menu"][path_hash]
+                    del self.indices[path_hash]
                     continue
                 data["text"] = text
 
