@@ -224,14 +224,17 @@ class Indexer:
                 json.dump(self.indices["menu"], f, indent=4)
         return update
 
-    def create_query_engine(self):
-        """Returns a query engine."""
-        if self.query_engine is not None:
-            return
+    def create_query_engine(self, paths=None):
+        """Returns a combined index as engine."""
+        if paths is None:
+            paths = self.get_file_list()
 
+        path_hashes = [
+            hashlib.md5(path.encode("utf-8")).hexdigest() for path in paths
+        ]
         indices_list = []
         indices_summary = []
-        for path_hash in self.indices["menu"]:
+        for path_hash in path_hashes:
             value = self.indices[path_hash]
             indices_list.append(value["index"])
             indices_summary.append(value["summary"])
@@ -243,7 +246,8 @@ class Indexer:
             index_summaries=indices_summary,
             storage_context=storage_context,
         )
-        self.query_engine = combined_index.as_query_engine()
+
+        return combined_index.as_query_engine()
 
     def query(self, query):
         if self.build() or self.query_engine is None:
