@@ -1,7 +1,6 @@
 import hashlib
 import json
 import os
-import time
 
 from llama_index import (
     ComposableGraph,
@@ -20,19 +19,24 @@ from LlamaDocIndexer.io.documents import (
     read_plain_text,
     read_xlsx,
     save_index,
-    text_to_index,
 )
+from LlamaDocIndexer.utilities.patterns import ignored_files_to_patterns
 
 
 class Indexer:
     """Indexes a folder of documents and saves the index to a folder."""
 
     def __init__(
-        self, folder_path, index_path, types=None, ignored_files=None, depth=3
+        self,
+        folder_path,
+        index_path=None,
+        ignored_folders=None,
+        ignored_files=None,
+        depth=3,
     ):
         self.folder_path = folder_path
         self.index_path = index_path
-        self.types = types
+        self.ignored_folders = ignored_folders
         self.ignored_files = ignored_files
         self.depth = depth
         self.indices = {"menu": {}}
