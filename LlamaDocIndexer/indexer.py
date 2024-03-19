@@ -45,15 +45,15 @@ class Indexer:
 
     def initiate(self):
         """Initiates the indexer."""
-        if self.types is None:
-            self.types = [
-                ".txt",
-                ".pdf",
-                ".xlsx",
-                ".tex",
-            ]
+        if self.index_path is None:
+            self.index_path = os.path.join(self.folder_path, ".indices")
+        if self.ignored_folders is None:
+            self.ignored_folders = [".indices"]
+        else:
+            self.ignored_folders.append(".indices")
         if self.ignored_files is None:
             self.ignored_files = []
+        self.ignored_patterns = ignored_files_to_patterns(self.ignored_files)
         make_dirs(self.index_path)
         # load menu
         menu_path = os.path.join(self.index_path, "menu.json")
