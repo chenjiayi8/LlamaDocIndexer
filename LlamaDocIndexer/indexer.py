@@ -165,15 +165,15 @@ class Indexer:
                     continue
                 self.indices["menu"][path_hash]["modified"] = modified
 
-                # announce indexing
-                print("Indexing " + relative_path)
-
                 # read text
                 text = self.read_text(root, file)
                 if text is None or len(text) == 0:
                     del self.indices["menu"][path_hash]
                     del self.indices[path_hash]
                     continue
+
+                # announce indexing
+                print("Indexing " + relative_path)
                 data["text"] = text
 
                 # create index folder
