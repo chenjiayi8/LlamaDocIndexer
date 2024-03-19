@@ -170,8 +170,9 @@ class Indexer:
 
                 # read text
                 text = self.read_text(root, file)
-                if text is None:
-                    raise ValueError("Cannot read text from " + file)
+                if text is None or len(text) == 0:
+                    del self.indices["menu"][path_hash]
+                    continue
                 data["text"] = text
 
                 # create index folder
