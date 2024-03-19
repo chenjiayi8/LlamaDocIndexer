@@ -259,6 +259,15 @@ class Indexer:
     def get_file_list(self):
         """Returns a list of indexed files."""
         files = [v["path"] for k, v in self.indices["menu"].items()]
+        # filter out ignored folders
+        files = [file for file in files if not self.has_ignore_folder(file)]
+        # filter out ignored files
+        files = [
+            file
+            for file in files
+            if self.is_supported_file(os.path.join(self.folder_path, file))
+        ]
+
         return files
 
     def get_file_engine(self, file_path):
