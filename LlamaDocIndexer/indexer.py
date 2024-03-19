@@ -136,6 +136,8 @@ class Indexer:
         update = False
         # loop through all files in folder recursively
         for root, _, files in os.walk(self.folder_path):
+            if self.has_ignore_folder(root):
+                continue
             for file in files:
                 # check if file is supported
                 if not self.is_supported_file(file):
