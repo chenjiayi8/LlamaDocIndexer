@@ -280,3 +280,9 @@ class Indexer:
         index = load_index_from_storage(storage_context)
         file_engine = index.as_query_engine()
         return file_engine
+
+    def get_folder_engine(self, folder_path):
+        """Returns a query engine for a subfolder."""
+        all_paths = [v["path"] for k, v in self.indices["menu"].items()]
+        paths = [path for path in all_paths if path.startswith(folder_path)]
+        return self.create_query_engine(paths=paths)
