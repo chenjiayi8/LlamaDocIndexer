@@ -112,8 +112,6 @@ class Indexer:
         # get file extension
         file_extension = os.path.splitext(file)[1]
         text = None
-        if file_extension not in self.types:
-            return text
         if is_plain_text(file_path):
             text = read_plain_text(file_path)
         elif file_extension.lower() == ".pdf":
