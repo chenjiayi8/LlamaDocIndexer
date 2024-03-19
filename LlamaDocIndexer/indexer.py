@@ -250,8 +250,9 @@ class Indexer:
         return combined_index.as_query_engine()
 
     def query(self, query):
+        """Queries the index."""
         if self.build() or self.query_engine is None:
-            self.create_query_engine()
+            self.query_engine = self.create_query_engine()
         response = self.query_engine.query(query)
         return response
 
