@@ -172,7 +172,7 @@ class Indexer:
                         "modified": -1,
                     }
                     self.indices[path_hash] = {
-                        "summary": data["summary"],
+                        "summary": data.get("summary", ""),
                         "index": None,
                     }
                 # check if file has been modified
