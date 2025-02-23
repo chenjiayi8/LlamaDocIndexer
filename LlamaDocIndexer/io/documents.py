@@ -4,7 +4,7 @@ import os
 
 import pypdf
 import xlrd
-from llama_index import (
+from llama_index.core import (
     SimpleDirectoryReader,
     StorageContext,
     VectorStoreIndex,
