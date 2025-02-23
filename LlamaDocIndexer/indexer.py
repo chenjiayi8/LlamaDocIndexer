@@ -225,6 +225,15 @@ class Indexer:
                 json.dump(self.indices["menu"], f, indent=4)
         return update
 
+    def run_embedding_task(self, task):
+        """Runs an embedding task."""
+        print("Indexing " + task["data"]["path"])
+        index = self.generate_index(task["data"]["text"])
+        task["summary"] = self.generate_summary(index)
+        task["index"] = index
+        task["data"] = task["data"]
+        return task
+
     def create_query_engine(self, paths=None):
         """Returns a combined index as engine."""
         if paths is None:
