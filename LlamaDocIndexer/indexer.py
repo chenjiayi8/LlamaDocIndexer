@@ -34,12 +34,14 @@ class Indexer:
         ignored_folders=None,
         ignored_files=None,
         depth=3,
+        types=None,
     ):
         self.folder_path = folder_path
         self.index_path = index_path
         self.ignored_folders = ignored_folders
         self.ignored_files = ignored_files
         self.depth = depth
+        self.types = types
         self.menu = {}
         self.indices = {}
         self.query_engine = None
@@ -99,6 +101,10 @@ class Indexer:
 
     def is_supported_file(self, file_path):
         """Checks if a file is supported."""
+        if self.types is not None:
+            file_extension = os.path.splitext(file_path)[1]
+            if file_extension not in self.types:
+                return False
         file_name = os.path.basename(file_path)
         for pattern in self.ignored_patterns:
             if pattern.match(file_name) is not None:
