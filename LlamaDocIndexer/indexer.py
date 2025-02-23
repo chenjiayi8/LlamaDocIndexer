@@ -40,7 +40,8 @@ class Indexer:
         self.ignored_folders = ignored_folders
         self.ignored_files = ignored_files
         self.depth = depth
-        self.indices = {"menu": {}}
+        self.menu = {}
+        self.indices = {}
         self.query_engine = None
         self.initiate()
 
@@ -60,11 +61,11 @@ class Indexer:
         menu_path = os.path.join(self.index_path, "menu.json")
         if os.path.isfile(menu_path):
             with open(menu_path, "r", encoding="utf-8") as f:
-                self.indices["menu"] = json.load(f)
+                self.menu = json.load(f)
         else:
-            self.indices["menu"] = {}
+            self.menu = {}
             with open(menu_path, "w", encoding="utf-8") as f:
-                json.dump(self.indices["menu"], f, indent=4)
+                json.dump(self.menu, f, indent=4)
 
         self.load_indices()
 
@@ -82,10 +83,10 @@ class Indexer:
 
     def load_indices(self):
         """Loads the indices from the index folder."""
-        for path_hash in self.indices["menu"]:
+        for path_hash in self.menu:
             data_path = os.path.join(self.index_path, path_hash, "data.json")
             if not os.path.isfile(data_path):
-                del self.indices["menu"][path_hash]
+                del self.menu[path_hash]
                 continue
 
             with open(data_path, "r", encoding="utf-8") as f:
@@ -168,7 +169,7 @@ class Indexer:
 
                 # check if file is already indexed
                 if path_hash not in self.indices:
-                    self.indices["menu"][path_hash] = {
+                    self.menu[path_hash] = {
                         "name": data["name"],
                         "path": data["path"],
                         "modified": -1,
@@ -178,14 +179,14 @@ class Indexer:
                         "index": None,
                     }
                 # check if file has been modified
-                if modified == self.indices["menu"][path_hash]["modified"]:
+                if modified == self.menu[path_hash]["modified"]:
                     continue
-                self.indices["menu"][path_hash]["modified"] = modified
+                self.menu[path_hash]["modified"] = modified
 
                 # read text
                 text = self.read_text(root, file)
                 if text is None or len(text) == 0:
-                    del self.indices["menu"][path_hash]
+                    del self.menu[path_hash]
                     del self.indices[path_hash]
                     continue
 
@@ -220,7 +221,7 @@ class Indexer:
         if update:
             menu_path = os.path.join(self.index_path, "menu.json")
             with open(menu_path, "w", encoding="utf-8") as f:
-                json.dump(self.indices["menu"], f, indent=4)
+                json.dump(self.menu, f, indent=4)
         return update
 
     def run_embedding_task(self, task):
@@ -286,7 +287,7 @@ class Indexer:
 
     def get_file_list(self):
         """Returns a list of indexed files."""
-        files = [v["path"] for k, v in self.indices["menu"].items()]
+        files = [v["path"] for k, v in self.menu.items()]
         # filter out ignored folders
         files = [file for file in files if not self.has_ignore_folder(file)]
         # filter out ignored files
@@ -301,7 +302,7 @@ class Indexer:
     def get_file_engine(self, file_path):
         """Returns a query engine for a file."""
         path_hash = hashlib.md5(file_path.encode("utf-8")).hexdigest()
-        if path_hash not in self.indices["menu"]:
+        if path_hash not in self.menu:
             raise ValueError("File not indexed: " + file_path)
         index_path = os.path.join(self.index_path, path_hash, "index")
         storage_context = StorageContext.from_defaults(persist_dir=index_path)
@@ -311,6 +312,6 @@ class Indexer:
 
     def get_folder_engine(self, folder_path):
         """Returns a query engine for a subfolder."""
-        all_paths = [v["path"] for k, v in self.indices["menu"].items()]
+        all_paths = [v["path"] for k, v in self.menu.items()]
         paths = [path for path in all_paths if path.startswith(folder_path)]
         return self.create_query_engine(paths=paths)
