@@ -57,7 +57,6 @@ class Indexer:
             self.ignored_folders.append(".indices")
         if self.ignored_files is None:
             self.ignored_files = []
-        self.ignored_patterns = ignored_files_to_patterns(self.ignored_files)
         make_dirs(self.index_path)
         # load menu
         menu_path = os.path.join(self.index_path, "menu.json")
@@ -106,8 +105,8 @@ class Indexer:
             if file_extension not in self.types:
                 return False
         file_name = os.path.basename(file_path)
-        for pattern in self.ignored_patterns:
-            if pattern.match(file_name) is not None:
+        for ignored_file in self.ignored_files:
+            if ignored_file in file_name:
                 return False
         if is_plain_text(file_path):
             return True
