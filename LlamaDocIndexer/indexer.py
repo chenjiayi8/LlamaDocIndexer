@@ -253,7 +253,7 @@ class Indexer:
         index_path = os.path.join(index_folder, "index")
         save_index(self.indices[path_hash]["index"], index_path)
 
-    def create_query_engine(self, paths=None):
+    def create_query_engine(self, paths=None, top_k=5):
         """Returns a combined index as engine."""
         if paths is None:
             paths = self.get_file_list()
@@ -267,12 +267,12 @@ class Indexer:
             index = value.get("index")
             if index is None:
                 continue
-            vector_retriever = index.as_retriever(similarity_top_k=3)
+            vector_retriever = index.as_retriever(similarity_top_k=top_k)
             indices_nodes.append(
                 IndexNode(
-                    text=value["summary"],
-                    object=vector_retriever,
                     index_id=path_hash,
+                    obj=vector_retriever,
+                    text=value["summary"],
                 )
             )
         summary_index = SummaryIndex(objects=indices_nodes)
