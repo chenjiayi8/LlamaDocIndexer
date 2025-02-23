@@ -278,10 +278,10 @@ class Indexer:
         summary_index = SummaryIndex(objects=indices_nodes)
         return summary_index.as_query_engine()
 
-    def query(self, query):
+    def query(self, query, top_k=5):
         """Queries the index."""
         if self.build() or self.query_engine is None:
-            self.query_engine = self.create_query_engine()
+            self.query_engine = self.create_query_engine(top_k=top_k)
         response = self.query_engine.query(query)
         return response
 
@@ -299,19 +299,16 @@ class Indexer:
 
         return files
 
-    def get_file_engine(self, file_path):
+    def get_file_engine(self, file_path, top_k=5):
         """Returns a query engine for a file."""
         path_hash = hashlib.md5(file_path.encode("utf-8")).hexdigest()
         if path_hash not in self.menu:
             raise ValueError("File not indexed: " + file_path)
-        index_path = os.path.join(self.index_path, path_hash, "index")
-        storage_context = StorageContext.from_defaults(persist_dir=index_path)
-        index = load_index_from_storage(storage_context)
-        file_engine = index.as_query_engine()
+        file_engine = self.create_query_engine(paths=[file_path], top_k=top_k)
         return file_engine
 
-    def get_folder_engine(self, folder_path):
+    def get_folder_engine(self, folder_path, top_k=5):
         """Returns a query engine for a subfolder."""
         all_paths = [v["path"] for k, v in self.menu.items()]
         paths = [path for path in all_paths if path.startswith(folder_path)]
-        return self.create_query_engine(paths=paths)
+        return self.create_query_engine(paths=paths, top_k=top_k)
