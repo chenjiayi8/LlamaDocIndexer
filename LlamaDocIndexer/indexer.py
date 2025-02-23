@@ -139,9 +139,8 @@ class Indexer:
             return True
         return False
 
-    def build(self, num_workers=8):
-        """Builds the index."""
-        update = False
+    def get_task_list(self):
+        """Returns a list of tasks to be executed."""
         # loop through all files in folder recursively
         tasks = []
         for root, _, files in os.walk(self.folder_path):
@@ -209,8 +208,11 @@ class Indexer:
                     "data": data,
                 }
                 tasks.append(task)
-                update = True
+        return tasks
 
+    def build(self, num_workers=8):
+        """Builds the index."""
+        tasks = self.get_task_list()
         if len(tasks) == 0:
             return False
 
@@ -224,11 +226,10 @@ class Indexer:
             self.save_embedding_data(result)
 
         # save menu
-        if update:
-            menu_path = os.path.join(self.index_path, "menu.json")
-            with open(menu_path, "w", encoding="utf-8") as f:
-                json.dump(self.menu, f, indent=4)
-        return update
+        menu_path = os.path.join(self.index_path, "menu.json")
+        with open(menu_path, "w", encoding="utf-8") as f:
+            json.dump(self.menu, f, indent=4)
+        return True
 
     def run_embedding_task(self, task):
         """Runs an embedding task."""
