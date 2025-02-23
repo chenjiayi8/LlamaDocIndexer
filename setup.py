@@ -5,7 +5,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 
 setup(
     name="LlamaDocIndexer",
-    version="0.2.2",
+    version="0.3.1",
     packages=find_packages(),
     description="A tool to index and monitor changes in document directories",
     long_description_content_type="text/markdown",
