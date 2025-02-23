@@ -234,6 +234,26 @@ class Indexer:
         task["data"] = task["data"]
         return task
 
+    def save_embedding_data(self, task):
+        """Saves data to the index."""
+        path_hash = task["path_hash"]
+        index_folder = task["index_folder"]
+        index = task["index"]
+        # save summary data
+        data_path = os.path.join(index_folder, "data.json")
+        with open(data_path, "w", encoding="utf-8") as f:
+            json.dump(task["data"], f, indent=4)
+
+        # add to index
+        self.indices[path_hash] = {
+            "summary": task["summary"],
+            "index": index,
+        }
+
+        # save index
+        index_path = os.path.join(index_folder, "index")
+        save_index(self.indices[path_hash]["index"], index_path)
+
     def create_query_engine(self, paths=None):
         """Returns a combined index as engine."""
         if paths is None:
