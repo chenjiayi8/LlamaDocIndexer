@@ -260,22 +260,22 @@ class Indexer:
         path_hashes = [
             hashlib.md5(path.encode("utf-8")).hexdigest() for path in paths
         ]
-        indices_list = []
-        indices_summary = []
+        indices_nodes = []
         for path_hash in path_hashes:
             value = self.indices[path_hash]
-            indices_list.append(value["index"])
-            indices_summary.append(value["summary"])
-
-        storage_context = StorageContext.from_defaults()
-        combined_index = ComposableGraph.from_indices(
-            ListIndex,
-            indices_list,
-            index_summaries=indices_summary,
-            storage_context=storage_context,
-        )
-
-        return combined_index.as_query_engine()
+            index = value.get("index")
+            if index is None:
+                continue
+            vector_retriever = index.as_retriever(similarity_top_k=3)
+            indices_nodes.append(
+                IndexNode(
+                    text=value["summary"],
+                    object=vector_retriever,
+                    index_id=path_hash,
+                )
+            )
+        summary_index = SummaryIndex(objects=indices_nodes)
+        return summary_index.as_query_engine()
 
     def query(self, query):
         """Queries the index."""
