@@ -132,10 +132,11 @@ class Indexer:
             return True
         return False
 
-    def build(self):
+    def build(self, num_workers=8):
         """Builds the index."""
         update = False
         # loop through all files in folder recursively
+        tasks = []
         for root, _, files in os.walk(self.folder_path):
             if self.has_ignore_folder(root):
                 continue
@@ -188,8 +189,6 @@ class Indexer:
                     del self.indices[path_hash]
                     continue
 
-                # announce indexing
-                print("Indexing " + relative_path)
                 data["text"] = text
 
                 # create index folder
@@ -197,26 +196,25 @@ class Indexer:
                 make_dirs(index_folder)
 
                 # create index
-                index_path = os.path.join(index_folder, "index")
-                index = self.generate_index(data["text"])
-
-                # generate summary
-                data["summary"] = self.generate_summary(index)
-
-                # save summary data
-                data_path = os.path.join(index_folder, "data.json")
-                with open(data_path, "w", encoding="utf-8") as f:
-                    json.dump(data, f, indent=4)
-
-                # add to index
-                self.indices[path_hash] = {
-                    "summary": data.get("summary", ""),
-                    "index": index,
+                task = {
+                    "path_hash": path_hash,
+                    "index_folder": index_folder,
+                    "data": data,
                 }
-
-                # save index
-                save_index(self.indices[path_hash]["index"], index_path)
+                tasks.append(task)
                 update = True
+
+        if len(tasks) == 0:
+            return False
+
+        # run tasks in parallel
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=num_workers
+        ) as executor:
+            results = executor.map(self.run_embedding_task, tasks)
+
+        for result in results:
+            self.save_embedding_data(result)
 
         # save menu
         if update:
