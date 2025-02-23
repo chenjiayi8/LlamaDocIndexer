@@ -1,15 +1,16 @@
+import concurrent.futures
 import hashlib
 import json
 import os
 
-from llama_index import (
-    ComposableGraph,
+from llama_index.core import (
     Document,
-    ListIndex,
     StorageContext,
+    SummaryIndex,
     VectorStoreIndex,
     load_index_from_storage,
 )
+from llama_index.core.schema import IndexNode
 
 from LlamaDocIndexer.io.documents import (
     is_plain_text,
