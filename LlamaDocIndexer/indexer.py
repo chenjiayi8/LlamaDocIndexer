@@ -282,7 +282,7 @@ class Indexer:
                 )
             )
         summary_index = SummaryIndex(objects=indices_nodes)
-        return summary_index.as_query_engine()
+        return summary_index.as_chat_engine()
 
     def query(self, query, top_k=5):
         """Queries the index."""
